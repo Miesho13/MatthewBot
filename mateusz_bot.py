@@ -34,30 +34,30 @@ class HostedBot(commands.Bot):
       return
 
     if ctx.command is None and (matches := get_close_matches(message.content, self.all_commands, 1)):
-            match, = matches
-            bot_msg = await ctx.send(f'Did you mean `{match}`?')
+      match, = matches
+      bot_msg = await ctx.send(f'Did you mean `{match}`?')
 
-            emojis = ('✅', '❌')
+      emojis = ('✅', '❌')
 
-            for emoji in emojis:
-                self.loop.create_task(bot_msg.add_reaction(emoji))
+      for emoji in emojis:
+        self.loop.create_task(bot_msg.add_reaction(emoji))
 
-            try:
-                reaction, _ = await self.wait_for(
-                    'reaction_add',
-                    check=lambda r, user: r.message == bot_msg and user == ctx.author and str(r.emoji) in emojis,
-                    timeout=10)
+        try:
+          reaction, _ = await self.wait_for(
+            'reaction_add',
+            check=lambda r, user: r.message == bot_msg and user == ctx.author and str(r.emoji) in emojis,
+            timeout=10)
 
-            except asyncio.TimeoutError:
-                return
+        except asyncio.TimeoutError:
+          return
 
-            finally:
-                await bot_msg.delete()
+        finally:
+          await bot_msg.delete()
 
-            if str(reaction.emoji) == '❌':
-                return
+        if str(reaction.emoji) == '❌':
+          return
 
-            ctx.command = self.all_commands[match]
+        ctx.command = self.all_commands[match]
 
     await self.invoke(ctx)
 
