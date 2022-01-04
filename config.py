@@ -1,0 +1,3 @@
+#GENERAL VARIABLE
+COGS_FLODER = "Commands"
+PREFIX_HOST = ">"
